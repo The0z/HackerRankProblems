@@ -1,0 +1,83 @@
+/*
+Alex works at a clothing store. There is a large pile of socks that must be paired by color for sale. 
+Given an array of integers representing the color of each sock, determine how many pairs of socks with matching colors there are.
+*/
+
+
+'use strict';
+
+const fs = require('fs');
+
+process.stdin.resume();
+process.stdin.setEncoding('utf-8');
+
+let inputString = '';
+let currentLine = 0;
+
+process.stdin.on('data', inputStdin => {
+    inputString += inputStdin;
+});
+
+process.stdin.on('end', _ => {
+    inputString = inputString.replace(/\s*$/, '')
+        .split('\n')
+        .map(str => str.replace(/\s*$/, ''));
+
+    main();
+});
+
+function readLine() {
+    return inputString[currentLine++];
+}
+
+// Complete the sockMerchant function below.
+// number of socks = n
+// array of socks = ar
+function sockMerchant(n, ar) {
+    //Using maps now
+    let pairs = 0;
+    let sockMap = new Map();
+
+    for(let i = n-1; i >= 0; i--){
+        if(sockMap.has(ar[i])){
+            sockMap.set(ar[i],sockMap.get(ar[i])+1);
+        }
+        else{
+            sockMap.set(ar[i], 1);
+        }
+    }
+
+    for (let key of sockMap.keys()) {
+        pairs = pairs + Math.floor(sockMap.get(key)/2);
+    }
+
+    /*
+    //Create dictionary
+    var dict = {};
+    
+    // Note maps are better than doing this (object way)
+    for(let i = n-1; i >= 0; i--){ //Create Dictionary
+        dict[ar[i]] = (dict.hasOwnProperty(ar[i])) ? dict[ar[i]] + 1 : 1;
+    }
+    let dSize = Object.keys(dict).length;
+    for(var key in dict){
+        pairs = pairs + Math.floor(dict[key]/2);
+
+    }
+    */
+    return pairs; 
+}
+
+function main() {
+    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+
+    const n = parseInt(readLine(), 10);
+
+    const ar = readLine().split(' ').map(arTemp => parseInt(arTemp, 10));
+
+    let result = sockMerchant(n, ar);
+
+    ws.write(result + "\n");
+
+    ws.end();
+}
